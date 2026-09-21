@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#0a0a0f">
+<title>Sion Anime</title>
+<script src="https://unpkg.com/@ungap/custom-elements-builtin"></script>
+<script type="module" src="https://unpkg.com/x-frame-bypass"></script>
+<style>
+:root{--bg:#0a0a0f;--bg2:#101015;--surf:#17171e;--surf2:#1f1f28;--bor:#28282f;--txt:#f5f5f7;--soft:#a1a1aa;--mut:#71717a;--gold:#e8b146;--gold2:#f4c96b;--red:#ef4444;--grn:#10b981;--blue:#3b82f6;--org:#f59e0b}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;width:100%;position:fixed}
+body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;font-size:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input{font-family:inherit;font-size:inherit;color:inherit}
+svg{stroke-width:1.7;width:1em;height:1em;flex-shrink:0}
+::-webkit-scrollbar{width:0;height:0}
+#app{display:flex;flex-direction:column;height:100vh;height:100dvh;width:100%}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;padding-top:max(14px,env(safe-area-inset-top));background:var(--bg2);border-bottom:1px solid var(--bor);flex-shrink:0;z-index:20}
+.hdr h1{font-size:15px;font-weight:900;letter-spacing:-.03em;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hdr p{font-size:8.5px;color:var(--mut);letter-spacing:.15em;text-transform:uppercase;margin-top:2px;font-weight:800}
+.main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;padding-bottom:80px}
+.tab{display:none}.tab.on{display:block;animation:fu .3s ease}
+@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.sb-wrap{padding:14px 16px 6px}
+.sb{display:flex;align-items:center;gap:10px;background:var(--surf);border:1px solid var(--bor);border-radius:12px;padding:0 14px;height:44px}
+.sb:focus-within{border-color:var(--gold)}
+.sb svg{color:var(--mut);font-size:16px}
+.sb input{flex:1;background:transparent;border:none;outline:none;font-size:13.5px;font-weight:500}
+.sb .go{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0a0f;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:6px 16px 12px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;padding:8px 14px;border-radius:100px;background:var(--surf);border:1px solid var(--bor);font-size:12px;font-weight:700;color:var(--soft);white-space:nowrap;cursor:pointer}
+.chip.on{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0a0f;border-color:transparent}
+.content{padding:0 16px 24px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(min-width:480px){.grid{grid-template-columns:repeat(4,1fr)}}
+.card{background:var(--surf);border:1px solid var(--bor);border-radius:11px;overflow:hidden;cursor:pointer;position:relative;transition:all .2s}
+.card:active{transform:scale(.96)}
+.card .cov{width:100%;aspect-ratio:2/3;object-fit:cover;background:var(--surf2);display:block}
+.card .ph{width:100%;aspect-ratio:2/3;display:flex;align-items:center;justify-content:center;color:var(--mut);background:var(--surf2)}
+.card .ph svg{font-size:32px}
+.card .bd{padding:8px}
+.card .tt{font-size:11px;font-weight:700;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.card .mt{font-size:9.5px;color:var(--mut);margin-top:3px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card .bdg{position:absolute;top:6px;left:6px;padding:3px 7px;border-radius:6px;background:linear-gradient(135deg,var(--gold),#d99c2b);font-size:8.5px;font-weight:900;color:#0a0a0f}
+.card .type{position:absolute;top:6px;right:6px;padding:3px 7px;border-radius:6px;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);font-size:8.5px;font-weight:800;color:#fff;text-transform:uppercase}
+.spin{padding:60px 20px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.spin-ring{width:44px;height:44px;border-radius:50%;position:relative}
+.spin-ring::before{content:'';position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,transparent,var(--gold),transparent);animation:sr 1s linear infinite}
+.spin-ring::after{content:'';position:absolute;inset:4px;border-radius:50%;background:var(--bg)}
+@keyframes sr{to{transform:rotate(360deg)}}
+.spin-txt{font-size:13px;font-weight:700;color:var(--soft)}
+.spin-sub{font-size:11px;color:var(--mut)}
+.err{padding:60px 24px;text-align:center}
+.err .em{font-size:44px;margin-bottom:14px;opacity:.5}
+.err h4{font-size:15px;font-weight:800;margin-bottom:8px}
+.err p{font-size:12.5px;color:var(--soft);line-height:1.55;margin-bottom:16px}
+.err .rsn{padding:12px;background:var(--surf);border:1px solid var(--bor);border-radius:10px;font-size:11px;color:var(--mut);font-family:ui-monospace,monospace;margin-bottom:14px;text-align:left;word-break:break-all}
+.err button{padding:12px 24px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0a0f;border-radius:10px;font-weight:800;font-size:13px}
+.nav{display:flex;background:var(--bg2);border-top:1px solid var(--bor);flex-shrink:0;padding:6px 0 max(6px,env(safe-area-inset-bottom));position:relative;z-index:20}
+.nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;color:var(--mut);font-size:9.5px;font-weight:800;position:relative}
+.nav button svg{width:20px;height:20px}
+.nav button.on{color:var(--gold)}
+.nav button.on svg{transform:translateY(-2px) scale(1.08);transition:transform .25s}
+.detail-hero{display:flex;gap:14px;margin-bottom:16px}
+.dc{width:110px;flex-shrink:0;aspect-ratio:2/3;border-radius:12px;overflow:hidden;background:var(--surf2);box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.dc img{width:100%;height:100%;object-fit:cover}
+.di{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.di h3{font-size:16px;font-weight:800;line-height:1.25;letter-spacing:-.02em}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{font-size:9.5px;padding:3px 8px;border-radius:100px;background:var(--surf2);color:var(--soft);font-weight:700;border:1px solid var(--bor)}
+.tag.g{background:rgba(232,177,70,.14);color:var(--gold);border-color:rgba(232,177,70,.3)}
+.desc{font-size:12.5px;color:var(--soft);line-height:1.7;padding:14px;background:var(--surf);border-radius:12px;border:1px solid var(--bor);margin-bottom:16px}
+.st{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--soft);margin:16px 0 10px;display:flex;align-items:center;gap:8px}
+.st::before{content:'';width:4px;height:14px;border-radius:2px;background:var(--gold)}
+.info-grid{display:grid;grid-template-columns:1fr;gap:6px;margin-bottom:16px}
+.info-row{display:flex;gap:12px;padding:11px 14px;background:var(--surf);border-radius:10px;font-size:12.5px;border:1px solid var(--bor)}
+.info-row .k{color:var(--mut);font-weight:700;flex-shrink:0;min-width:76px;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.info-row .v{color:var(--txt);font-weight:600;flex:1}
+.ep-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(min-width:480px){.ep-grid{grid-template-columns:repeat(6,1fr)}}
+.ep-btn{padding:11px 6px;background:var(--surf);border:1px solid var(--bor);border-radius:10px;text-align:center;font-weight:800;font-size:12.5px;color:var(--txt);cursor:pointer;text-decoration:none;display:block}
+.ep-btn:hover{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0a0f;border-color:transparent}
+.stream-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:16px}
+.stream-item{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--surf);border:1px solid var(--bor);border-radius:12px;text-decoration:none;color:var(--txt);transition:all .2s}
+.stream-item:hover{border-color:var(--gold);background:var(--surf2)}
+.stream-item .ic{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:900}
+.stream-item .ic.otaku{background:linear-gradient(135deg,#3b82f6,#2563eb)}
+.stream-item .ic.samehada{background:linear-gradient(135deg,#10b981,#059669)}
+.stream-item .ic.kura{background:linear-gradient(135deg,#f43f5e,#dc2626)}
+.stream-item .ic.opl{background:linear-gradient(135deg,#f59e0b,#d97706)}
+.stream-item .info{flex:1;min-width:0}
+.stream-item .info .q{font-size:13px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stream-item .info .s{font-size:10.5px;color:var(--mut);margin-top:2px;font-weight:600}
+.vwrap{position:relative;width:100%;background:#000;aspect-ratio:16/9;border-radius:12px;overflow:hidden;margin-bottom:14px}
+.vwrap iframe{width:100%;height:100%;border:none;display:block}
+.servers{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.sv{padding:9px 13px;border-radius:9px;background:var(--surf2);border:1px solid var(--bor);font-size:11.5px;font-weight:800;color:var(--soft);cursor:pointer}
+.sv.on{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0a0f;border-color:transparent}
+.dl-item{padding:12px 14px;background:var(--surf);border:1px solid var(--bor);border-radius:10px;font-size:12px;font-weight:700;text-decoration:none;color:var(--txt);display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.dl-item .q{color:var(--mut);font-size:10px}
+.li{padding:12px 14px;background:var(--surf);border:1px solid var(--bor);border-radius:10px;display:flex;align-items:center;gap:10px;cursor:pointer;font-size:12.5px;margin-bottom:6px}
+.li:hover{border-color:var(--gold)}
+.li .n{font-weight:800;color:var(--gold);flex-shrink:0}
+.li .t{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.li .d{font-size:10px;color:var(--mut);flex-shrink:0}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+<symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 2l9 7.5V20a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+<symbol id="i-fire" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.4-.5-2-1-3-1.1-2.1-.4-4 2-6 .5 2 2 3 3 4.5 1.5 2.2 2 4 2 5.5A6 6 0 016 18c-2 0-4-1.5-4-4 0-1.5.5-3 2-4.5.5 1 1.5 1.5 2 2 .5.5 1 1 1.5 1.5.5.5 1 .5 1 1.5z"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="16 10 11 15 8 12"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+<symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+<symbol id="i-tv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M17 2l-5 5-5-5"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21"/></symbol>
+<symbol id="i-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6"/></symbol>
+<symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.1 9 22.6 9.3 16.8 14.1 18.6 21.2 12 17.3 5.4 21.2 7.2 14.1 1.4 9.3 8.9 9"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"><path d="M9 6l6 6-6 6"/></symbol>
+<symbol id="i-server" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="6" rx="2"/><rect x="2" y="13" width="20" height="6" rx="2"/><path d="M6 6h.01M6 16h.01"/></symbol>
+<symbol id="i-left" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4"/></symbol>
+<symbol id="i-right" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+</svg>
+
+<div id="app">
+  <div class="hdr">
+    <div>
+      <h1>Sion Anime</h1>
+      <p>4 Sumber · Sub Indo</p>
+    </div>
+  </div>
+
+  <div class="main" id="scrollArea">
+    <div class="tab on" id="tabHome">
+      <div class="chips" id="homeChips">
+        <button class="chip on" data-mode="seasonal" onclick="loadHome('seasonal', this)">Musim Ini</button>
+        <button class="chip" data-mode="airing" onclick="loadHome('airing', this)">Sedang Tayang</button>
+        <button class="chip" data-mode="top" onclick="loadHome('top', this)">Top Anime</button>
+        <button class="chip" data-mode="popular" onclick="loadHome('popular', this)">Populer</button>
+        <button class="chip" data-mode="upcoming" onclick="loadHome('upcoming', this)">Akan Datang</button>
+        <button class="chip" data-mode="movie" onclick="loadHome('movie', this)">Movie</button>
+      </div>
+      <div class="content" id="homeContent"></div>
+    </div>
+
+    <div class="tab" id="tabSearch">
+      <div class="sb-wrap">
+        <div class="sb">
+          <svg><use href="#i-search"/></svg>
+          <input id="qInput" placeholder="Cari judul anime..." onkeydown="if(event.key==='Enter')doSearch()">
+          <button class="go" onclick="doSearch()"><svg><use href="#i-chev"/></svg></button>
+        </div>
+      </div>
+      <div class="content" id="searchContent"></div>
+    </div>
+
+    <div class="tab" id="tabDetail">
+      <div class="content" id="detailContent"></div>
+    </div>
+
+    <div class="tab" id="tabWatch">
+      <div class="content" id="watchContent"></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="on" onclick="switchTab('Home',this)"><svg><use href="#i-home"/></svg>Home</button>
+    <button onclick="switchTab('Search',this)"><svg><use href="#i-search"/></svg>Cari</button>
+    <button onclick="goBack()"><svg><use href="#i-back"/></svg>Kembali</button>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const JIKAN = 'https://api.jikan.moe/v4';
+let history = [];
+let cache = {};
+
+function esc(v) { return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  $('tab' + name).classList.add('on');
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  $('scrollArea').scrollTop = 0;
+}
+
+function goBack() {
+  const last = history.pop();
+  if (last === 'search') switchTab('Search', document.querySelectorAll('.nav button')[1]);
+  else if (last === 'watch') switchTab('Detail', null);
+  else switchTab('Home', document.querySelectorAll('.nav button')[0]);
+}
+
+function showSpin(el, txt, sub) {
+  el.innerHTML = `<div class="spin"><div class="spin-ring"></div><div class="spin-txt">${esc(txt || 'Memuat...')}</div>${sub ? `<div class="spin-sub">${esc(sub)}</div>` : ''}</div>`;
+}
+
+function showErr(el, title, reason, retryFn) {
+  el.innerHTML = `<div class="err"><div class="em">!</div><h4>${esc(title)}</h4><p>Mohon maaf. Coba lagi sebentar.</p>${reason ? `<div class="rsn">${esc(reason)}</div>` : ''}${retryFn ? `<button onclick="${retryFn}">Coba Lagi</button>` : ''}</div>`;
+}
+
+async function jikan(path) {
+  if (cache[path] && cache[path].t > Date.now() - 300000) return cache[path].d;
+  const r = await fetch(JIKAN + path, { signal: AbortSignal.timeout(15000) });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  const d = await r.json();
+  cache[path] = { d, t: Date.now() };
+  return d;
+}
+
+function renderCard(a) {
+  const title = a.title_english || a.title || 'Untitled';
+  const cover = a.images?.jpg?.image_url || '';
+  const score = a.score ? a.score.toFixed(1) : '';
+  const type = a.type || '';
+  return `<div class="card" onclick="openDetail(${a.mal_id})">
+    ${cover ? `<img class="cov" src="${esc(cover)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="ph" style="display:none"><svg><use href="#i-tv"/></svg></div>` : '<div class="ph"><svg><use href="#i-tv"/></svg></div>'}
+    ${score ? `<div class="bdg">★ ${esc(score)}</div>` : ''}
+    ${type ? `<div class="type">${esc(type)}</div>` : ''}
+    <div class="bd"><div class="tt">${esc(title)}</div></div>
+  </div>`;
+}
+
+/* HOME */
+async function loadHome(mode, btn) {
+  document.querySelectorAll('#homeChips .chip').forEach(c => c.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  const el = $('homeContent');
+  showSpin(el, 'Memuat...', 'MyAnimeList');
+  const map = { seasonal: '/seasons/now?limit=24', airing: '/top/anime?filter=airing&limit=24', top: '/top/anime?limit=24', popular: '/top/anime?filter=bypopularity&limit=24', upcoming: '/seasons/upcoming?limit=24', movie: '/top/anime?type=movie&limit=24' };
+  try {
+    const d = await jikan(map[mode]);
+    if (!d.data || !d.data.length) return showErr(el, 'Tidak Ada Data', '', `loadHome('${mode}', null)`);
+    let html = '<div class="grid">';
+    d.data.forEach(a => html += renderCard(a));
+    html += '</div>';
+    el.innerHTML = html;
+  } catch(e) { showErr(el, 'Gagal Memuat', e.message, `loadHome('${mode}', null)`); }
+}
+
+/* SEARCH */
+let searchQ = '';
+async function doSearch(page) {
+  const q = page ? searchQ : $('qInput').value.trim();
+  if (!q) return;
+  searchQ = q;
+  if (!page) { switchTab('Search', document.querySelectorAll('.nav button')[1]); history.push('search'); }
+  const el = $('searchContent');
+  showSpin(el, 'Mencari...', q + (page ? ' - hal ' + page : ''));
+  try {
+    const d = await jikan('/anime?q=' + encodeURIComponent(q) + '&limit=24&page=' + (page || 1) + '&sfw=true');
+    if (!d.data || !d.data.length) return showErr(el, 'Tidak Ditemukan', 'Coba kata kunci lain.', '');
+    let html = '<div class="grid">';
+    d.data.forEach(a => html += renderCard(a));
+    html += '</div>';
+    const p = d.pagination || {};
+    if (p.last_visible_page > 1) {
+      html += `<div style="display:flex;gap:8px;justify-content:center;padding:20px 0"><button class="ep-btn" ${!p.has_previous_page?'style="opacity:.3;pointer-events:none"':''} onclick="doSearch(${(p.current_page||1)-1})">Prev</button><span style="padding:11px 16px;color:var(--mut);font-weight:800;font-size:12px">${p.current_page||1} / ${p.last_visible_page}</span><button class="ep-btn" ${!p.has_next_page?'style="opacity:.3;pointer-events:none"':''} onclick="doSearch(${(p.current_page||1)+1})">Next</button></div>`;
+    }
+    el.innerHTML = html;
+  } catch(e) { showErr(el, 'Pencarian Gagal', e.message, 'doSearch()'); }
+}
+
+/* DETAIL */
+async function openDetail(malId) {
+  switchTab('Detail', null);
+  history.push('home');
+  const el = $('detailContent');
+  showSpin(el, 'Memuat detail...');
+  try {
+    const d = await jikan('/anime/' + malId + '/full');
+    const a = d.data;
+    if (!a) return showErr(el, 'Data Kosong', '');
+    const title = a.title_english || a.title || 'Untitled';
+    const cover = a.images?.jpg?.large_image_url || a.images?.jpg?.image_url || '';
+    const score = a.score ? a.score.toFixed(1) : '-';
+    const year = a.year || '-';
+    const eps = a.episodes || '?';
+    const status = a.status || '-';
+    const studio = (a.studios || [])[0]?.name || '-';
+    const genres = (a.genres || []).map(g => g.name).slice(0, 6);
+    const synopsis = a.synopsis || 'Tidak ada sinopsis.';
+    const cleanTitle = (a.title || '').replace(/[^\w\s]/g, ' ').trim();
+    
+    let html = `<div class="detail-hero">
+      <div class="dc">${cover ? `<img src="${esc(cover)}" onerror="this.style.display='none'">` : ''}</div>
+      <div class="di">
+        <h3>${esc(title)}</h3>
+        <div class="tags">
+          <span class="tag g">★ ${esc(score)}</span>
+          <span class="tag">${esc(year)}</span>
+          <span class="tag">${esc(eps)} EP</span>
+          ${genres.slice(0, 3).map(g => `<span class="tag">${esc(g)}</span>`).join('')}
+        </div>
+      </div>
+    </div>`;
+    
+    // STREAM BUTTONS (in-app iframe)
+    html += '<div class="st">Nonton di App</div><div class="stream-grid">';
+    html += `<button class="stream-item" onclick="playIframe('otaku','${esc(cleanTitle)}')">
+      <div class="ic otaku">O</div>
+      <div class="info"><div class="q">Otakudesu</div><div class="s">Sub Indo · Lengkap</div></div>
+      <svg class="go"><use href="#i-play"/></svg>
+    </button>`;
+    html += `<button class="stream-item" onclick="playIframe('samehada','${esc(cleanTitle)}')">
+      <div class="ic samehada">S</div>
+      <div class="info"><div class="q">Samehada</div><div class="s">Sub Indo · Alternatif</div></div>
+      <svg class="go"><use href="#i-play"/></svg>
+    </button>`;
+    html += `<button class="stream-item" onclick="playIframe('kura','${esc(cleanTitle)}')">
+      <div class="ic kura">K</div>
+      <div class="info"><div class="q">Kuramanime</div><div class="s">Sub Indo · HD</div></div>
+      <svg class="go"><use href="#i-play"/></svg>
+    </button>`;
+    html += `<button class="stream-item" onclick="playIframe('opl','${esc(cleanTitle)}')">
+      <div class="ic opl">O</div>
+      <div class="info"><div class="q">Oploverz</div><div class="s">Sub Indo · Alternatif</div></div>
+      <svg class="go"><use href="#i-play"/></svg>
+    </button>`;
+    html += '</div>';
+    
+    // Info
+    html += '<div class="st">Informasi</div><div class="info-grid">';
+    if (studio !== '-') html += `<div class="info-row"><span class="k">Studio</span><span class="v">${esc(studio)}</span></div>`;
+    html += `<div class="info-row"><span class="k">Status</span><span class="v">${esc(status)}</span></div>`;
+    if (genres.length) html += `<div class="info-row"><span class="k">Genre</span><span class="v">${genres.map(g => esc(g)).join(', ')}</span></div>`;
+    html += '</div>';
+    
+    if (synopsis && synopsis !== 'Tidak ada sinopsis.') {
+      const paras = synopsis.split('\n').filter(p => p.trim());
+      html += '<div class="st">Sinopsis</div><div class="desc">' + paras.map(p => `<p style="margin-bottom:10px">${esc(p)}</p>`).join('') + '</div>';
+    }
+    
+    el.innerHTML = html;
+  } catch(e) { showErr(el, 'Gagal Memuat Detail', e.message, `openDetail(${malId})`); }
+}
+
+/* IFRAME PLAYER (bypass x-frame-options) */
+async function playIframe(source, title) {
+  switchTab('Watch', null);
+  history.push('detail');
+  const el = $('watchContent');
+  showSpin(el, 'Menyiapkan player...', title);
+  
+  // Build target URL berdasarkan source
+  let targetUrl = '';
+  if (source === 'otaku') targetUrl = `https://otakudesu.cloud/?s=${encodeURIComponent(title)}&post_type=anime`;
+  else if (source === 'samehada') targetUrl = `https://samehada.site/?s=${encodeURIComponent(title)}`;
+  else if (source === 'kura') targetUrl = `https://kuramanime.ing/search?q=${encodeURIComponent(title)}`;
+  else if (source === 'opl') targetUrl = `https://oploverz.am/?s=${encodeURIComponent(title)}`;
+  
+  // Pakai CORS proxy untuk bypass X-Frame-Options
+  const proxied = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
+  
+  setTimeout(() => {
+    el.innerHTML = `
+      <div style="font-size:14px;font-weight:800;margin-bottom:12px">${esc(title)}</div>
+      <div class="vwrap">
+        <iframe is="x-frame-bypass" src="${esc(proxied)}" allowfullscreen allow="autoplay; encrypted-media; fullscreen" referrerpolicy="no-referrer"></iframe>
+      </div>
+      <div class="info" style="margin-top:12px">
+        <svg><use href="#i-info"/></svg>
+        <span>Jika player tidak muncul, buka langsung di <a href="${esc(targetUrl)}" target="_blank" style="color:var(--gold);font-weight:800">${source}</a></span>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="ep-btn" style="flex:1" onclick="goBack()">← Kembali</button>
+        <a class="ep-btn" style="flex:1;text-align:center;text-decoration:none;padding:11px" href="${esc(targetUrl)}" target="_blank" rel="noopener">Buka di ${source} →</a>
+      </div>
+    `;
+  }, 800);
+}
+
+/* Init */
+window.addEventListener('load', () => {
+  loadHome('seasonal', document.querySelector('#homeChips .chip'));
+});
+</script>
+</body>
+</html>
